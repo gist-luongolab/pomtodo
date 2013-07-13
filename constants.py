@@ -1,0 +1,7 @@
+class Constants:
+	LIST_ALL_TASK = "ALL";
+	LIST_TASK_BY_TAGNAME = "LIST_TASK_BY_TAGNAME"
+	ADD_TASK = "ADD"
+	SHELL_INTERACTIVE_MODE = "interactive"
+
+	PROMPT_SHELL="> "

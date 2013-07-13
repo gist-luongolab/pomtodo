@@ -1,0 +1,33 @@
+#!/usr/bin/python
+
+import sys
+import pprint
+from constants import Constants
+from parser import Parser	
+from mongodb import DBManager
+from tasks import Tasks
+from shell import Shell
+
+dbmng = DBManager("pomodoroDB")
+
+# Configuration Tasks
+Tasks.dbmng = dbmng
+Tasks.taskid = dbmng.countAllTasks()
+
+#Type of parser
+parserCmdLine = Parser(sys.argv)
+
+## Command line output parser ##
+command = parserCmdLine.parseCmdLine()
+if command['constReturnValue'] == Constants.ADD_TASK:
+	Tasks.addTasks(command['words'])
+	Tasks.writeTaskWithTags()
+elif command['constReturnValue'] == Constants.LIST_ALL_TASK:
+	for task in Tasks.findAllTasks():
+		print task['todo']
+elif command['constReturnValue'] == Constants.LIST_TASK_BY_TAGNAME:
+	for task in Tasks.findTaskWithTagname(command['tagname']):
+		print task['todo']
+elif command['constReturnValue'] == Constants.SHELL_INTERACTIVE_MODE:
+	shellCmd = Shell()
+	shellCmd.callShellPrompt()
