@@ -1,8 +1,10 @@
 import os
 import cmd
 import sys
+import time
 from constants import Constants
 from tasks import Tasks
+from todaysheet import TodaySheet
 
 class Shell(cmd.Cmd):
 	
@@ -23,7 +25,18 @@ class Shell(cmd.Cmd):
 	
 	def do_list(self, line):
 		for task in Tasks.findAllTasks():
-			print task['todo']
+			print "%d) %s " % (task['_id'],task['todo'])
+	
+	def do_mv(self, line):
+		taskid = line.split(',')
+		self._todaySheet = TodaySheet(taskid)
+		Tasks.writeTasksInTodaySheet(self._todaySheet.makeRecordToWriteOnDB())
+
+	def do_now(self, line):
+		 Tasks.getTodayTasks()
+	
+	def do_start(self, line):
+		
 	def do_EOF(self, line):
 		return True
 	def do_exit(self, args):

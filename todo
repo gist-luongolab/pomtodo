@@ -9,6 +9,7 @@ from tasks import Tasks
 from shell import Shell
 
 dbmng = DBManager("pomodoroDB")
+#dbmng.dropdb("pomodoroDB")
 
 # Configuration Tasks
 Tasks.dbmng = dbmng

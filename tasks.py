@@ -22,6 +22,10 @@ class Tasks:
 		for task in Tasks.tasks:
 			Tasks.dbmng.insertTaskWithTags(task)
 	@staticmethod
+	def writeTasksInTodaySheet(todaySheet):
+		Tasks.dbmng.insertTasksInTodaySheet(todaySheet)
+	
+	@staticmethod
 	def findAllTasks():
 		return Tasks.dbmng.findAll()
 
@@ -30,3 +34,14 @@ class Tasks:
 	def findTaskWithTagname(tagname):
 		return Tasks.dbmng.findTaskWithTag(tagname)
 			
+	@staticmethod
+	def getTodayTasks():
+		todayTasks = []
+		for task in Tasks.dbmng.getTodayTasksByTodaySheet():
+			print "%-100s %-100s" % (task['todo'], task['tags'])
+			
+			
+	
+	@staticmethod
+	def findDetailTasksByToday( taskids):
+		return Tasks.dbmng.findDetailTasksTodaySheet(taskids)

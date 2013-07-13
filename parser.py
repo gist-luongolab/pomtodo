@@ -19,14 +19,11 @@ class Parser(cmd.Cmd):
 		self._parser = argparse.ArgumentParser(description='Pomodoro activities')
 		self._parser.add_argument('-a', '--add', dest="words", nargs="+")
 		self._parser.add_argument('-l', '--list', dest="typeOfList", nargs="+")
-		self._parser.add_argument('-m', '--move', dest="listTaskId", nargs='+')
 		self._parser.add_argument('-i', '--interactive', action="store_true", )
 		args = self._parser.parse_args()
 		
 		if (args.words):
 			return self.__parseAddTaskCmd(args.words)
-		elif (args.listTaskId):
-			return self.__parseMoveCmd(args.listid)
 		elif (args.typeOfList):
 			if (args.typeOfList[0] == "all"):
 				return {'constReturnValue':Constants.LIST_ALL_TASK}
