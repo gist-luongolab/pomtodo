@@ -7,16 +7,21 @@ class Tasks:
 	def addTasks(words):
 		tags = []
 		phrase = ""
+		estimated_pomodori = 0
 		for word in words:
 			if ('+' in word):
 				tags.append(word)
+			elif ('#' in word):
+				estimated_pomodori = int(word[1:])
 			else:
 				phrase += " " + word	
 		
 		Tasks.taskid += 1
-		Tasks.tasks.append({"_id": Tasks.taskid,'tags': tags, 'todo': phrase.lstrip()})
+		Tasks.tasks.append({"_id": Tasks.taskid,'tags': tags, 'todo': phrase.lstrip(), 'deletesoft': 0, 'completed': 0, 'npomodoroEstimated': estimated_pomodori})
 
-	
+	"""
+		Write methods on DB
+	"""
 	@staticmethod 
 	def writeTaskWithTags():
 		for task in Tasks.tasks:
@@ -26,6 +31,13 @@ class Tasks:
 		Tasks.dbmng.insertTasksInTodaySheet(todaySheet)
 	
 	@staticmethod
+	def deleteSoftFromTasksInventory(taskid):
+		Tasks.dbmng.updateTaskSettingDeleteSoft(taskid)
+
+	"""
+		Find methods on DB
+	"""
+	@staticmethod
 	def findAllTasks():
 		return Tasks.dbmng.findAll()
 
@@ -34,14 +46,27 @@ class Tasks:
 	def findTaskWithTagname(tagname):
 		return Tasks.dbmng.findTaskWithTag(tagname)
 			
+
 	@staticmethod
-	def getTodayTasks():
-		todayTasks = []
+	def listTodayTasks(viewCompleteTasks = False):
 		for task in Tasks.dbmng.getTodayTasksByTodaySheet():
-			print "%-100s %-100s" % (task['todo'], task['tags'])
-			
+			if viewCompleteTasks:
+				print "%-100s %-50s" % (task['todo'], ('COMPLETATO' if task['completed'] else 'NON COMPLETATO'))
+			else:
+				if (not task['completed']):
+					print "%-100s" % (task['todo'])	
 			
 	
 	@staticmethod
-	def findDetailTasksByToday( taskids):
-		return Tasks.dbmng.findDetailTasksTodaySheet(taskids)
+	def getTodayTasks():
+		tasks = []
+		for task in Tasks.dbmng.getTodayTasksByTodaySheet():
+			if (not task['completed']):
+				tasks.append({'taskid': task['_id'], 'task': task['todo']})
+		return tasks
+			
+	@staticmethod
+	def updatePomodoroByTodayTask(taskid, npomodoro):
+		Tasks.dbmng.updateNumberOfPomodoroTodaySheet(taskid, npomodoro)
+
+	
