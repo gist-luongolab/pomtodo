@@ -5,3 +5,4 @@ class Constants:
 	SHELL_INTERACTIVE_MODE = "interactive"
 
 	PROMPT_SHELL="> "
+	

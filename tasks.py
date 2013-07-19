@@ -33,7 +33,10 @@ class Tasks:
 	@staticmethod
 	def deleteSoftFromTasksInventory(taskid):
 		Tasks.dbmng.updateTaskSettingDeleteSoft(taskid)
-
+	@staticmethod
+	def updateTaskToComplete(taskid):
+		Tasks.dbmng.updateTaskSettingCompleted(taskid)
+		
 	"""
 		Find methods on DB
 	"""
@@ -41,20 +44,39 @@ class Tasks:
 	def findAllTasks():
 		return Tasks.dbmng.findAll()
 
+	@staticmethod
+	def findAllTodaySheets(tagname):
+		for task in Tasks.dbmng.findAllTodaySheets():
+			task_description = Tasks.dbmng.getTaskFromTaskid(task['taskid'])['todo']
+			tags = Tasks.dbmng.getTaskFromTaskid(task['taskid'])['tags']
+			if (tagname in tags):
+				print 
+				print "%-130s (%s) %+50s" % (task_description, task['npomodoroCurrent'],('COMPLETATO' if task['completed'] else 'NON COMPLETATO'))
+				print "%+200s" % (tags)
+				print "-" * 200
 
+
+			
+		
 	@staticmethod
 	def findTaskWithTagname(tagname):
 		return Tasks.dbmng.findTaskWithTag(tagname)
-			
+	
+	@staticmethod
+	def moveTasksFromTodaySheetToTasksList():
+		Tasks.dbmng.moveTasksFromTodaySheetToTasksList()
+		
 
 	@staticmethod
 	def listTodayTasks(viewCompleteTasks = False):
-		for task in Tasks.dbmng.getTodayTasksByTodaySheet():
+		tasksTodaySheet = Tasks.dbmng.getTodayTasksByTodaySheet()[0]
+		tasks = Tasks.dbmng.getTodayTasksByTodaySheet()[1]
+		for task in tasks :
 			if viewCompleteTasks:
-				print "%-100s %-50s" % (task['todo'], ('COMPLETATO' if task['completed'] else 'NON COMPLETATO'))
+				print "%-100s (%s) %+50s" % (task['todo'], tasksTodaySheet[str(task['_id'])]['npomodoroCurrent'],('COMPLETATO' if task['completed'] else 'NON COMPLETATO'))
 			else:
 				if (not task['completed']):
-					print "%-100s" % (task['todo'])	
+					print "%s) %-100s" % (task['_id'],task['todo'])	
 			
 	
 	@staticmethod
@@ -64,9 +86,19 @@ class Tasks:
 			if (not task['completed']):
 				tasks.append({'taskid': task['_id'], 'task': task['todo']})
 		return tasks
+		
+	@staticmethod
+	def getNextTask(taskid):
+		tasks = Tasks.getTodayTasks()
+		for task in tasks:
+			if int(taskid) == task['taskid']:
+				return task
 			
 	@staticmethod
 	def updatePomodoroByTodayTask(taskid, npomodoro):
 		Tasks.dbmng.updateNumberOfPomodoroTodaySheet(taskid, npomodoro)
 
+	@staticmethod
+	def updateTaskFromTodoTxtFile(taskid, taskModified):
+		Tasks.dbmng.updateTaskFromTodoTxtFile(taskid, taskModified)
 	
