@@ -82,7 +82,7 @@ class Tasks:
 	@staticmethod
 	def getTodayTasks():
 		tasks = []
-		for task in Tasks.dbmng.getTodayTasksByTodaySheet():
+		for task in Tasks.dbmng.getTodayTasksByTodaySheet()[1]:
 			if (not task['completed']):
 				tasks.append({'taskid': task['_id'], 'task': task['todo']})
 		return tasks

@@ -147,11 +147,12 @@ class Shell(cmd.Cmd):
 		return True
 	
 	def do_exit(self, args):
+		self.__exportTasksToFile();	
 		Tasks.moveTasksFromTodaySheetToTasksList()
 		return True
 
 	def __exportTasksToFile(self):
-		out_file = open("/Users/luigi/Dropbox/todo/td.txt","w")
+		out_file = open("/Users/luigi/Dropbox/todo/td.txt","w+")
 		tasks = Tasks.findAllTasks()
 		if tasks:
 			for task in tasks:
